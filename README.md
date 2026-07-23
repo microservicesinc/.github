@@ -1,4 +1,4 @@
-# Microservices Architecture Lab - Showcase 🚀
+# Microservices Architecture Lab 🚀
 
 Este espacio ha sido diseñado para demostrar la implementación de una arquitectura híbrida de microservicios, combinando cómputo tradicional en contenedores con un diseño moderno **Serverless orientado a eventos**. 
 
