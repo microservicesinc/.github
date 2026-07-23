@@ -16,6 +16,14 @@ El objetivo principal es resolver el problema del acoplamiento temporal entre se
 
 ---
 
+## Diseño 
+
+El siguiente diagrama mezcla desarrollo, despliegue y tecnologías involucradas en su estado final de implementación.
+
+<img width="1128" height="885" alt="image" src="https://github.com/user-attachments/assets/04f765d7-7ef1-487a-a180-5cf5cd2eee08" />
+
+---
+
 ## 🗺️ Roadmap de Implementación
 
 El proyecto se ejecuta de forma incremental a través de las siguientes fases estratégicas para asegurar la calidad del código y la automatización:
@@ -43,7 +51,4 @@ El proyecto se ejecuta de forma incremental a través de las siguientes fases es
 * **`inventory-service`**: Microservicio que gestiona el stock de productos (Python/Flask) y aloja el código de la Lambda atómica.
 * **`infrastructure`**: Código fuente de AWS CDK para el despliegue automatizado de la arquitectura en la nube.
 
-## Diseño 
-
-<img width="1128" height="885" alt="image" src="https://github.com/user-attachments/assets/04f765d7-7ef1-487a-a180-5cf5cd2eee08" />
 
