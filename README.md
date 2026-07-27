@@ -58,3 +58,26 @@ El proyecto se ejecuta de forma incremental a través de las siguientes fases es
 * **`infrastructure`**: Código fuente de AWS CDK para el despliegue automatizado de la arquitectura en la nube.
 
 
+# Mejoras y Futuros Cambios de Arquitectura
+
+Este documento detalla la hoja de ruta técnica para elevar los niveles de escalabilidad, desacoplamiento y resiliencia del ecosistema de microservicios, transitando desde nuestro modelo actual hacia patrones distribuidos avanzados.
+
+---
+
+## 📢 Evolución de la Comunicación Orientada a Eventos
+
+### 1. Implementación del Patrón SNS-to-SQS Fan-out
+Actualmente, el servicio de Órdenes se comunica de forma directa punto a punto con la cola de Inventario. Para permitir que el ecosistema crezca de forma orgánica sin modificar el servicio emisor, escalaremos la mensajería al patrón **Fan-out**.
+
+*   **Mecánica del Cambio:** El microservicio de Órdenes dejará de publicar directamente en `StockUpdateQueue`. En su lugar, publicará un único evento genérico (`OrderCreated`) en un tópico de **Amazon SNS**.
+*   **Suscripción por Colas:** La cola actual de Inventario (`StockUpdateQueue`) se suscribirá a dicho tópico de SNS. Si en el futuro el negocio requiere agregar nuevos microservicios (como un servicio de *Notificaciones* o *Auditoría*), bastará con crearles su propia cola SQS y suscribirla al mismo tópico de SNS.
+*   **Beneficio Arquitectónico:** Logramos un desacoplamiento total de tipo *1-a-N*. Mantenemos el beneficio de **Queue-Based Load Leveling** (nivelación de carga y amortiguación de hilos) de SQS para cada worker, pero ganamos la flexibilidad de que múltiples servicios reaccionen al mismo evento de negocio de forma independiente.
+
+### 2. Transición hacia Amazon EventBridge (Event Bus)
+Como evolución definitiva hacia una arquitectura reactiva empresarial de nivel *Élite*, se proyecta la migración del transporte de mensajería hacia **Amazon EventBridge**.
+
+*   **Enrutamiento Inteligente por Contenido:** Eliminaremos la necesidad de gestionar múltiples tópicos rígidos de SNS. Centralizaremos toda la comunicación en un único **Bus de Eventos (Event Bus)** customizado. EventBridge evaluará el JSON de los eventos en tiempo real mediante *Reglas de Filtrado*, enviando los payloads a las Lambdas o colas correspondientes basándose estrictamente en los atributos del mensaje.
+*   **Schema Registry (Contratos Fuertemente Tipados):** Utilizaremos el Registro de Esquemas nativo de EventBridge para asegurar que los cambios en la estructura de los JSON (enviados por ejemplo desde Python) no rompan las aplicaciones consumidoras (.NET 10). Esto nos permitirá descargar esquemas y generar clases fuertemente tipadas en tiempo de compilación.
+*   **Integración SaaS Directa:** Habilitará la capacidad de capturar eventos de proveedores externos de la industria (como pasarelas de pago tipo Stripe o Auth0) directamente en nuestro Bus de Eventos sin necesidad de programar, asegurar ni mantener Webhooks intermedios en nuestras APIs principales.
+
+
