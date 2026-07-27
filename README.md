@@ -18,9 +18,15 @@ El objetivo principal es resolver el problema del acoplamiento temporal entre se
 
 ## Diseño 
 
-El siguiente diagrama mezcla desarrollo, despliegue y tecnologías involucradas en su estado final de implementación.
+El diseño de este sistema se puede ver en el siguiente diagrama de interacción. Algunas características:
 
-<img width="1128" height="885" alt="image" src="https://github.com/user-attachments/assets/04f765d7-7ef1-487a-a180-5cf5cd2eee08" />
+* **Políglota**: Dominio de Órdenes en .NET 10 y el de Inventario en Python 3/Flask. Cada microservicio usa su propia base de datos NoSQL (DynamoDB) e infraestructura independiente.
+* **Patrón Saga basada en Coreografía**: Cero orquestadores centrales. Los servicios hablan tirando eventos asíncronos a colas AWS SQS (StockUpdateQueue y OrderValidationResponseQueue).
+* **Consistencia Eventual**: Al ser asíncrono, la orden se guarda rápido como PENDING (Paso 2.2). El estado final se estabiliza a APPROVED (Paso 7) en milisegundos tras vaciarse las colas.
+* **Idempotencia con traceId (🛡️)**: SQS estándar puede duplicar mensajes. Pasamos un traceId (Correlation ID) en el payload para que la Lambda de Python valide que no descuente stock dos veces.
+* **CQRS Integrado**: El cliente muta el sistema con comandos (POST Order) y consulta estados con un canal de lectura ultraligero (GET Order info).
+
+![alt text](image.png)
 
 ---
 
