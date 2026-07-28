@@ -58,6 +58,10 @@ El proyecto se ejecuta de forma incremental a través de las siguientes fases es
 * **`infrastructure`**: Código fuente de AWS CDK para el despliegue automatizado de la arquitectura en la nube.
 
 
+# Roadmap
+
+[Roadmap](ROADMAP.md)
+
 # Mejoras y Futuros Cambios de Arquitectura
 
 Este documento detalla la hoja de ruta técnica para elevar los niveles de escalabilidad, desacoplamiento y resiliencia del ecosistema de microservicios, transitando desde nuestro modelo actual hacia patrones distribuidos avanzados.
