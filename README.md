@@ -26,7 +26,7 @@ El diseño de este sistema se puede ver en el siguiente diagrama de interacción
 * **Idempotencia con traceId (🛡️)**: SQS estándar puede duplicar mensajes. Pasamos un traceId (Correlation ID) en el payload para que la Lambda de Python valide que no descuente stock dos veces.
 * **CQRS Integrado**: El cliente muta el sistema con comandos (POST Order) y consulta estados con un canal de lectura ultraligero (GET Order info).
 
-![alt text](image.png)
+![alt text](image-3.png)
 
 ---
 
